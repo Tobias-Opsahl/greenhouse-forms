@@ -1,0 +1,7 @@
+numpy==2.3.3  # Numerical python, efficient array operations
+pandas==2.3.2  # Dataframe handling
+
+streamlit==1.49.1  # The web framework
+streamlit-option-menu==0.4.0  # Better multiple options menu
+streamlit-extras==0.7.8  # Includes stylable containers
+watchdog==6.0.0  # Makes reloading more efficient for Streamlit
