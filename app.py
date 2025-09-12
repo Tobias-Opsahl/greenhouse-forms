@@ -1,8 +1,10 @@
-import streamlit as st
-
-from src.ui.css_settings import GLOBAL_CSS
-from src.questions import QUESTIONS
 import random
+
+import streamlit as st
+from streamlit_extras.stylable_container import stylable_container
+
+from src.questions import QUESTIONS
+from src.ui.css_settings import GLOBAL_CSS, CONTAINER_CSS
 
 
 @st.cache_resource(show_spinner=False, ttl=360)
@@ -31,7 +33,7 @@ def main():
     options = shuffle_options(options=options)
     options_and_answers = current_question["options"]
 
-    st.write(current_question["text"])
+    st.markdown(f"<p style='font-size:18px; font-weight:500;'>{current_question['text']}</p>", unsafe_allow_html=True)
     if current_question["type"] == "single":
         answer = st.radio(
             "Choose one",
@@ -63,8 +65,8 @@ def main():
         st.session_state["feedback"] = None
 
     if submitted:
-        st.session_state[submitted_flag] = True  # set lock
-        # evaluate answers
+        st.session_state[submitted_flag] = True  # Set lock
+        # Evaluate answers
         if current_question["type"] == "single":
             answer = st.session_state.get(f"answer_{st.session_state.page}")
             if current_question["options"][answer]:
@@ -95,4 +97,5 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    with stylable_container(key="about_tab", css_styles=CONTAINER_CSS):
+        main()
