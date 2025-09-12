@@ -90,7 +90,7 @@ def main():
         st.rerun()
 
     with col2:
-        next_question_true = st.button("Next question")
+        next_question_true = st.button("Next question", disabled=not st.session_state[submitted_flag])
     if next_question_true:
         st.session_state.page += 1
         st.rerun()
