@@ -7,10 +7,23 @@ from src.questions import QUESTIONS
 
 @st.cache_resource(show_spinner=False, ttl=360)
 def shuffle_options(options):
+    """
+    Shuffles the options and caches the function, so that the shuffle will remain the same
+    accross Streamlits many automatic reruns.
+
+    Args:
+        options (list): List of options.
+
+    Returns:
+        list: Shuffled list of options.
+    """
     return random.sample(options, k=len(options))
 
 
 def _initialize_quiz():
+    """
+    Initializes session state variables for the quiz.
+    """
     if "page" not in st.session_state:
         st.session_state["page"] = 0
     if "score" not in st.session_state:
@@ -20,6 +33,9 @@ def _initialize_quiz():
 
 
 def _reset_quiz_session():
+    """
+    Resets the state of the quiz. Sets the scores and page number to 0 and removes answers and submitted flags.
+    """
     st.session_state["page"] = 0
     st.session_state["score"] = 0
 
@@ -27,12 +43,14 @@ def _reset_quiz_session():
     for i in range(len(QUESTIONS) + 1):
         st.session_state.pop(f"submitted_{i}", None)
         st.session_state.pop(f"answer_{i}", None)
-        st.session_state.pop(f"submitted_{i}", None)
 
     st.session_state.pop("feedback", None)
 
 
 def _show_ending_screen():
+    """
+    Shows the ending screen of the quiz. Displays score and buttons for attempting again or returning to main screen.
+    """
     st.write(f"Done! Final score: {st.session_state.score}/{len(QUESTIONS)}")
 
     col1, col2 = st.columns([1, 1])
@@ -53,9 +71,25 @@ def _show_ending_screen():
 
 
 def _render_question(current_question, submitted_flag):
+    """
+    Renders a questions. Shows the question text on screen, then the appropriate options given if the answer has
+    a single or multiple correct answers. Collect the answers and returns the indexes corresponding to the answered
+    options in a list.
+
+    Args:
+        current_question (dict): Data structur of the questions, from `src.questions.py`.
+        submitted_flag (str): String representing if the current question has been submitted or not.
+
+    Returns:
+        list of int: List of the answered indexes. May be empty.
+    """
+    # Display question text in medium boldness
     st.markdown(f"<p style='font-size:18px; font-weight:500;'>{current_question['text']}</p>", unsafe_allow_html=True)
+
+    # Maps options to indexes, sort of the other way around than the questions datastructure.
     options_dict = {value["option"]: index for index, value in current_question["options"].items()}
     shuffled_options = shuffle_options(list(options_dict.keys()))
+    answer_indexes = []
 
     # Single correct answer
     if current_question["type"] == "single":
@@ -67,12 +101,10 @@ def _render_question(current_question, submitted_flag):
             disabled=st.session_state[submitted_flag],
         )
         if choice is not None:
-            answer_index = options_dict[choice]
-            return answer_index
-        return None
+            answer_indexes.append(options_dict[choice])
+        return answer_indexes
 
     # Multiple correct answers
-    answer_indexes = []
     for option in shuffled_options:
         index = options_dict[option]
         checked = st.checkbox(
@@ -86,6 +118,9 @@ def _render_question(current_question, submitted_flag):
 
 
 def _show_feedback():
+    """
+    Displays feedback with Streamlit, depending on the value of "feedback" in the session state.
+    """
     feedback = st.session_state.get("feedback")
     if feedback is not None:
         col1, _ = st.columns([3, 1])
@@ -97,16 +132,22 @@ def _show_feedback():
         st.session_state["feedback"] = None
 
 
-def _process_answer(answer, current_question, submitted_flag):
-    st.session_state[submitted_flag] = True  # Set lock
+def _process_answer(answer_indexes, current_question):
+    """
+    Given an answer and a question, finds out if the answer was correct or not.
 
-    # Single correct answer
+    Args:
+        answer_indexes (list of int): List of the indexes corresponding to the answered options. May be empty.
+        current_question (dict): Data structure of the question, from `questions.py`.
+    """
+    # Single correct answer_indexes
     if current_question["type"] == "single":
-        if answer is None:
+        if answer_indexes == []:
             st.session_state["feedback"] = False
             st.rerun()
             return
-        correct = current_question["options"][answer]["validity"]
+        answer_index = answer_indexes[0]
+        correct = current_question["options"][answer_index]["validity"]
         if correct is True:
             st.session_state["score"] += 1
             st.session_state["feedback"] = True
@@ -119,10 +160,10 @@ def _process_answer(answer, current_question, submitted_flag):
     correct = True
     for index, value in current_question["options"].items():
         if value["validity"] is True:
-            if index not in answer:
+            if index not in answer_indexes:
                 correct = False
         if value["validity"] is False:
-            if index in answer:
+            if index in answer_indexes:
                 correct = False
     if correct is True:
         st.session_state["score"] += 1
@@ -134,6 +175,9 @@ def _process_answer(answer, current_question, submitted_flag):
 
 
 def render_quiz():
+    """
+    Renders the full quiz. Calls help functions and updates session states.
+    """
     _initialize_quiz()
 
     if st.session_state.page >= len(QUESTIONS):
@@ -143,7 +187,7 @@ def render_quiz():
     current_question = QUESTIONS[st.session_state.page]
     submitted_flag = f"submitted_{st.session_state.page}"
 
-    answer = _render_question(current_question=current_question, submitted_flag=submitted_flag)
+    answer_indexes = _render_question(current_question=current_question, submitted_flag=submitted_flag)
 
     col1, _, col2, _ = st.columns([1, 1, 1, 1])
     with col1:
@@ -152,7 +196,8 @@ def render_quiz():
     _show_feedback()
 
     if submitted:
-        _process_answer(answer=answer, current_question=current_question, submitted_flag=submitted_flag)
+        st.session_state[submitted_flag] = True  # Set lock
+        _process_answer(answer_indexes=answer_indexes, current_question=current_question)
 
     with col2:
         next_question_true = st.button("Next question", disabled=not st.session_state[submitted_flag])
