@@ -6,8 +6,8 @@ QUESTIONS = [
             "Cyber Security": True,
             "Consultant": False,
             "IT Architecture and Software engineering": True,
-            "Data Scientist": False,
-            "Data Enineer": False,
+            "Data Science": False,
+            "Data Engineering": False,
         },
     },
     {
