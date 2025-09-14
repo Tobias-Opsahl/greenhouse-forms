@@ -32,7 +32,7 @@ def _initialize_quiz():
         st.session_state[f"submitted_{st.session_state.page}"] = False
 
 
-def _reset_quiz_session():
+def reset_quiz_session():
     """
     Resets the state of the quiz. Sets the scores and page number to 0 and removes answers and submitted flags.
     """
@@ -51,6 +51,9 @@ def _show_ending_screen():
     """
     Shows the ending screen of the quiz. Displays score and buttons for attempting again or returning to main screen.
     """
+    if st.session_state["score"] >= st.session_state["best_quiz_score"]:
+        st.session_state["best_quiz_score"] = st.session_state["score"]
+
     st.write(f"Done! Final score: {st.session_state.score}/{len(QUESTIONS)}")
 
     col1, col2 = st.columns([1, 1])
@@ -61,11 +64,11 @@ def _show_ending_screen():
         return_to_start = st.button("Return to start")
 
     if try_quiz_again is True:
-        _reset_quiz_session()
+        reset_quiz_session()
         st.rerun()
 
     if return_to_start is True:
-        _reset_quiz_session()
+        reset_quiz_session()
         st.session_state["current_page"] = "welcome"
         st.rerun()
 
@@ -88,6 +91,7 @@ def _render_question(current_question, submitted_flag):
 
     # Maps options to indexes, sort of the other way around than the questions datastructure.
     options_dict = {value["option"]: index for index, value in current_question["options"].items()}
+
     shuffled_options = shuffle_options(list(options_dict.keys()))
     answer_indexes = []
 
@@ -189,7 +193,7 @@ def render_quiz():
 
     answer_indexes = _render_question(current_question=current_question, submitted_flag=submitted_flag)
 
-    col1, _, col2, _ = st.columns([1, 1, 1, 1])
+    col1, col2 = st.columns([1, 1])
     with col1:
         submitted = st.button("Submit", disabled=st.session_state[submitted_flag])
 

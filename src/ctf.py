@@ -51,6 +51,10 @@ def _display_ctf_task():
             if st.session_state["ctf_tasks_completed"][task_index] is False:
                 st.session_state["ctf_tasks_completed"][task_index] = True
                 st.session_state["ctf_score"] += 1
+
+            if st.session_state["ctf_score"] >= st.session_state["best_ctf_score"]:
+                st.session_state["best_ctf_score"] = st.session_state["ctf_score"]
+
             st.success(f"Correct! CTF Score: {st.session_state['ctf_score']}")
         else:
             st.error("Wrong, please try again")
