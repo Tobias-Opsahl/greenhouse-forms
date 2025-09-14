@@ -36,8 +36,14 @@ GLOBAL_CSS = f"""
     font-style: normal;
 }}
 
-/* Overwrite (almost) everything to DNB font */
+/* Overwrite (almost) everything to DNB font 
 * {{
+    font-family: 'DNB-FontFamily', sans-serif !important;
+    font-weight: 400;
+}}
+*/
+
+body, p, div, label {{
     font-family: 'DNB-FontFamily', sans-serif !important;
     font-weight: 400;
 }}
