@@ -1,7 +1,7 @@
 import streamlit as st
 from streamlit_extras.stylable_container import stylable_container
 
-from src.ctf import render_ctf_tasks
+from src.ctf import render_ctf_tasks, reset_ctf_session
 from src.quiz import render_quiz, reset_quiz_session
 from src.ui.css_settings import CONTAINER_CSS, GLOBAL_CSS
 
@@ -67,6 +67,8 @@ def display_header():
         if return_clicked is True:
             if st.session_state["current_page"] == "quiz":
                 reset_quiz_session()
+            elif st.session_state["current_page"] == "ctf":
+                reset_ctf_session()
             st.session_state["current_page"] = "welcome"
             st.rerun()
 

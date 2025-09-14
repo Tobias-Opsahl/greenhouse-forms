@@ -35,17 +35,17 @@ CTF_TASKS = [
     {
         "id": 4,
         "title": "Finn Sykkelen",
-        "text": "Sykkelen min har blitt stjålet! Kan du hjelpe meg å finne den? Jeg mistet den da jeg var på ferie i USA i februar. Det var en rød Fuji Tahoe 29.",
+        "text": "Sykkelen min har blitt stjålet! Kan du hjelpe meg å finne den? Jeg mistet den da jeg var på ferie i USA i februar. Det var en rød FC-770.",
         "hint": None,
         "answer_text": "<navn-på-byen-med-sykkelen> ",
-        "answer": ["houston"],
+        "answer": ["portland"],
     },
     {
         "id": 5,
         "title": "Sha",
         "text": "97c10efe01d5c9c88704a12d361d8429b3a6aa2412290a0773109d5d2d603d5e",
         "hint": "Sha256",
-        "answer_text": "<eight-digit-code>",
+        "answer_text": "<secret-password>",
         "answer": ["easy"],
     },
     {
