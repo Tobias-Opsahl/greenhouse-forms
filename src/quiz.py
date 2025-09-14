@@ -22,11 +22,14 @@ def _initialize_quiz():
 def _reset_quiz_session():
     st.session_state["page"] = 0
     st.session_state["score"] = 0
+
+    # Clear session states corresponding to questions and answers
     for i in range(len(QUESTIONS) + 1):
-        if f"submitted_{i}" in st.session_state:
-            st.session_state[i] = False
-        if f"answer_{i}" in st.session_state:
-            st.session_state[i] = False
+        st.session_state.pop(f"submitted_{i}", None)
+        st.session_state.pop(f"answer_{i}", None)
+        st.session_state.pop(f"submitted_{i}", None)
+
+    st.session_state.pop("feedback", None)
 
 
 def _show_ending_screen():
@@ -44,27 +47,42 @@ def _show_ending_screen():
         st.rerun()
 
     if return_to_start is True:
+        _reset_quiz_session()
         st.session_state["current_page"] = "welcome"
         st.rerun()
 
 
-def _render_question(current_question, options, options_and_answers, submitted_flag):
+def _render_question(current_question, submitted_flag):
     st.markdown(f"<p style='font-size:18px; font-weight:500;'>{current_question['text']}</p>", unsafe_allow_html=True)
+    options_dict = {value["option"]: index for index, value in current_question["options"].items()}
+    shuffled_options = shuffle_options(list(options_dict.keys()))
+
+    # Single correct answer
     if current_question["type"] == "single":
-        st.radio(
+        choice = st.radio(
             "Choose one",
-            options,
+            shuffled_options,
             index=None,
             key=f"answer_{st.session_state.page}",
             disabled=st.session_state[submitted_flag],
         )
-    else:
-        for option in options_and_answers.keys():
-            st.checkbox(
-                option,
-                key=f"chk_{st.session_state.page}_{option}",
-                disabled=st.session_state[submitted_flag],
-            )
+        if choice is not None:
+            answer_index = options_dict[choice]
+            return answer_index
+        return None
+
+    # Multiple correct answers
+    answer_indexes = []
+    for option in shuffled_options:
+        index = options_dict[option]
+        checked = st.checkbox(
+            option,
+            key=f"chk_{st.session_state.page}_{option}",
+            disabled=st.session_state[submitted_flag],
+        )
+        if checked is True:
+            answer_indexes.append(index)
+    return answer_indexes
 
 
 def _show_feedback():
@@ -79,35 +97,44 @@ def _show_feedback():
         st.session_state["feedback"] = None
 
 
-def _process_answer(answer, current_question, options, options_and_answers, submitted_flag):
+def _process_answer(answer, current_question, submitted_flag):
     st.session_state[submitted_flag] = True  # Set lock
-    # Evaluate answers
-    if current_question["type"] == "single":
-        answer = st.session_state.get(f"answer_{st.session_state.page}")
-        if current_question["options"][answer]:
-            st.session_state["score"] += 1
-            st.session_state["feedback"] = True
-        else:
-            st.session_state["feedback"] = False
-    else:
-        answers = [option for option in options if st.session_state[f"chk_{st.session_state.page}_{option}"]]
-        correct = all(
-            (options_and_answers[o] and o in answers) or (not options_and_answers[o] and o not in answers)
-            for o in options
-        )
-        if correct:
-            st.session_state["score"] += 1
-            st.session_state["feedback"] = True
-        else:
-            st.session_state["feedback"] = False
 
-    st.write(f"{st.session_state['feedback']=}")
+    # Single correct answer
+    if current_question["type"] == "single":
+        if answer is None:
+            st.session_state["feedback"] = False
+            st.rerun()
+            return
+        correct = current_question["options"][answer]["validity"]
+        if correct is True:
+            st.session_state["score"] += 1
+            st.session_state["feedback"] = True
+        else:
+            st.session_state["feedback"] = False
+        st.rerun()
+        return
+
+    # Multiple correct answers
+    correct = True
+    for index, value in current_question["options"].items():
+        if value["validity"] is True:
+            if index not in answer:
+                correct = False
+        if value["validity"] is False:
+            if index in answer:
+                correct = False
+    if correct is True:
+        st.session_state["score"] += 1
+        st.session_state["feedback"] = True
+    else:
+        st.session_state["feedback"] = False
+
     st.rerun()
 
 
 def render_quiz():
     _initialize_quiz()
-    st.write(f"{list(st.session_state.keys())=}")
 
     if st.session_state.page >= len(QUESTIONS):
         _show_ending_screen()
@@ -115,15 +142,8 @@ def render_quiz():
 
     current_question = QUESTIONS[st.session_state.page]
     submitted_flag = f"submitted_{st.session_state.page}"
-    options = list(current_question["options"].keys())
-    options = shuffle_options(options=options)
-    options_and_answers = current_question["options"]
-    answer = _render_question(
-        current_question=current_question,
-        options=options,
-        options_and_answers=options_and_answers,
-        submitted_flag=submitted_flag,
-    )
+
+    answer = _render_question(current_question=current_question, submitted_flag=submitted_flag)
 
     col1, _, col2, _ = st.columns([1, 1, 1, 1])
     with col1:
@@ -132,13 +152,7 @@ def render_quiz():
     _show_feedback()
 
     if submitted:
-        _process_answer(
-            answer=answer,
-            current_question=current_question,
-            options=options,
-            options_and_answers=options_and_answers,
-            submitted_flag=submitted_flag,
-        )
+        _process_answer(answer=answer, current_question=current_question, submitted_flag=submitted_flag)
 
     with col2:
         next_question_true = st.button("Next question", disabled=not st.session_state[submitted_flag])
