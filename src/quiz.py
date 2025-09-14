@@ -58,10 +58,10 @@ def _show_ending_screen():
 
     col1, col2 = st.columns([1, 1])
     with col1:
-        try_quiz_again = st.button("Try quiz again")
+        try_quiz_again = st.button("Try quiz again", key="try_quiz_again_button")
 
     with col2:
-        return_to_start = st.button("Return to start")
+        return_to_start = st.button("Return to start", key="return_to_start_from_quiz_button")
 
     if try_quiz_again is True:
         reset_quiz_session()
@@ -195,7 +195,7 @@ def render_quiz():
 
     col1, col2 = st.columns([1, 1])
     with col1:
-        submitted = st.button("Submit", disabled=st.session_state[submitted_flag])
+        submitted = st.button("Submit", disabled=st.session_state[submitted_flag], key="quiz_submitt_button")
 
     _show_feedback()
 
@@ -204,7 +204,9 @@ def render_quiz():
         _process_answer(answer_indexes=answer_indexes, current_question=current_question)
 
     with col2:
-        next_question_true = st.button("Next question", disabled=not st.session_state[submitted_flag])
+        next_question_true = st.button(
+            "Next question", disabled=not st.session_state[submitted_flag], key="quix_next_question_button"
+        )
     if next_question_true is True:
         st.session_state.page += 1
         st.rerun()

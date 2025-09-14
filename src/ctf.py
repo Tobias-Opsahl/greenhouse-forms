@@ -60,7 +60,7 @@ def _display_ctf_task():
     st.header(task["title"])
     st.write(task["text"])
 
-    user_answer = st.text_input(f"Answer: {task['answer_text']}")
+    user_answer = st.text_input(f"Answer: {task['answer_text']}", key="ctf_user_text_input")
     correct = _check_answer(user_answer=user_answer, task_answers=task["answer"])
 
     if task["hint"] is not None:
@@ -70,7 +70,7 @@ def _display_ctf_task():
     col1, col2 = st.columns([1, 1])
 
     with col1:
-        submit_clicked = st.button("Submit")
+        submit_clicked = st.button("Submit", key="submit_from_osint_ctf")
 
     if submit_clicked is True:
         if correct is True:
@@ -86,7 +86,7 @@ def _display_ctf_task():
             st.error("Wrong, please try again")
 
     with col2:
-        return_clicked = st.button("Return to CTF")
+        return_clicked = st.button("Return to CTF", key="return_to_ctf")
 
     if return_clicked is True:
         reset_ctf_session()
@@ -112,7 +112,7 @@ def _render_web_task1():
     col1, col2 = st.columns([1, 1])
 
     with col1:
-        clicked = st.button("Get flag", disabled=not enabled, key="ctf_btn")
+        clicked = st.button("Get flag", disabled=not enabled, key="get_flag_button")
     if clicked:
         if st.session_state["ctf_tasks_completed"][st.session_state["ctf_task_active_index"]] is False:
             st.session_state["ctf_tasks_completed"][st.session_state["ctf_task_active_index"]] = True
@@ -124,7 +124,7 @@ def _render_web_task1():
         st.success(f"Correct! CTF Score: {st.session_state['ctf_score']}")
 
     with col2:
-        return_clicked = st.button("Return to CTF")
+        return_clicked = st.button("Return to CTF", key="return_to_ctf_from_web1")
 
     if return_clicked is True:
         reset_ctf_session()
@@ -196,7 +196,7 @@ def _render_web_task2():
             st.error("Wrong, please try again.")
 
     with col2:
-        return_clicked = st.button("Return to CTF", key="ctf2_return")
+        return_clicked = st.button("Return to CTF", key="return_to_ctf_from_web2")
     if return_clicked:
         reset_ctf_session()
         st.rerun()
@@ -234,12 +234,12 @@ def render_ctf_tasks():
         col1, col2 = st.columns([1, 1])
 
         with col1:
-            clicked = st.button("Web1")
+            clicked = st.button("Web1", key="web1_button")
             if clicked is True:
                 clicked_index = len(CTF_TASKS)
 
         with col2:
-            clicked = st.button("Web2")
+            clicked = st.button("Web2", key="web2_button")
             if clicked is True:
                 clicked_index = len(CTF_TASKS) + 1
 

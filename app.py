@@ -27,13 +27,13 @@ def render_welcome_page():
     col1, col2 = st.columns([1, 1])
 
     with col1:
-        clicked_quiz = st.button("Start quiz")
+        clicked_quiz = st.button("Start quiz", key="start_quiz_button")
         if clicked_quiz is True:
             st.session_state["current_page"] = "quiz"
             st.rerun()
 
     with col2:
-        clicked_ctf = st.button("CTF")
+        clicked_ctf = st.button("CTF", key="start_ctf_button")
         if clicked_ctf is True:
             st.session_state["current_page"] = "ctf"
             st.rerun()
@@ -62,7 +62,7 @@ def display_header():
 
     if st.session_state["current_page"] != "welcome":
         with col1:
-            return_clicked = st.button("Return to start")
+            return_clicked = st.button("Return to start", key="header_return_to_start")
 
         if return_clicked is True:
             if st.session_state["current_page"] == "quiz":
