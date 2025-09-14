@@ -3,6 +3,9 @@ from src.ctf_tasks import CTF_TASKS, CTF_ABOUT
 
 
 def _initialize_ctf():
+    """
+    Initialize session state for CTF tasks.
+    """
     if st.session_state.get("ctf_tasks_completed") is None:
         st.session_state["ctf_tasks_completed"] = {i: False for i in range(len(CTF_TASKS))}
     if st.session_state.get("ctf_score") is None:
@@ -12,12 +15,25 @@ def _initialize_ctf():
 
 
 def _display_about():
+    """
+    Displau the header and about information.
+    """
     if st.session_state.get("ctf_task_active_index") is None:
         st.header("Capture the Flag (CTF)")
         st.write(CTF_ABOUT)
 
 
 def _check_answer(user_answer, task_answers):
+    """
+    Check if a user answer matches any of the correct answers.
+
+    Args:
+        user_answer (str): The answer from the user.
+        task_answers (list of str): List of the accepted answers from the task.
+
+    Returns:
+        bool: True if the answer was currect, False if not.
+    """
     user_answer = user_answer.lower().strip()
     for task_answer in task_answers:
         task_answer = task_answer.lower().strip()
@@ -28,6 +44,9 @@ def _check_answer(user_answer, task_answers):
 
 
 def _display_ctf_task():
+    """
+    Display a single CTF OSINT task and check the answer.
+    """
     task_index = st.session_state.get("ctf_task_active_index")
     task = CTF_TASKS[task_index]
 
@@ -68,6 +87,9 @@ def _display_ctf_task():
 
 
 def render_ctf_tasks():
+    """
+    Render the full CTF page.
+    """
     _initialize_ctf()
     _display_about()
 

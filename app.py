@@ -7,6 +7,9 @@ from src.ui.css_settings import CONTAINER_CSS, GLOBAL_CSS
 
 
 def _initialize_app():
+    """
+    Initialize session state variables used for all the pages.
+    """
     if "current_page" not in st.session_state:
         st.session_state["current_page"] = "welcome"
     if "best_quiz_score" not in st.session_state:
@@ -16,6 +19,9 @@ def _initialize_app():
 
 
 def render_welcome_page():
+    """
+    Render the welcome page.
+    """
     st.header("Welcome to Greenhouse at dagen@ifi 2025!")
 
     col1, col2 = st.columns([1, 1])
@@ -34,9 +40,9 @@ def render_welcome_page():
 
 
 def main():
-    st.markdown(GLOBAL_CSS, unsafe_allow_html=True)
-    _initialize_app()
-
+    """
+    Checks the applicationa and loads the corresponding page.
+    """
     current_page = st.session_state["current_page"]
 
     if current_page == "welcome":
@@ -48,11 +54,15 @@ def main():
 
 
 def display_header():
+    """
+    Display the header of the application, which is always present. The `Return to start` button is only
+    present when one is not at the welcome page.
+    """
     col1, col2, col3 = st.columns([1, 1, 1])
 
     if st.session_state["current_page"] != "welcome":
         with col1:
-            return_clicked = st.button("Return to main")
+            return_clicked = st.button("Return to start")
 
         if return_clicked is True:
             if st.session_state["current_page"] == "quiz":
