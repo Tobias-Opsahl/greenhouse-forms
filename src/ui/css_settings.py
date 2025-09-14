@@ -152,33 +152,3 @@ CONTAINER_CSS = f"""{{
     background-color: {colors["container-background"]};
 }}
 """
-
-ST_AGGRID_CSS = {
-    ".ag-row": {"font-family": "'DNB-FontFamily', sans-serif !important", "font-weight": "400 !important"},
-    ".ag-row-hover": {
-        "background-color": f"{colors['hover-option']} !important",
-        "font-family": "'DNB-FontFamily', sans-serif !important",
-        "font-weight": "400 !important",
-    },
-    ".ag-header-cell-label": {
-        "font-family": "'DNB-FontFamily', sans-serif !important",
-        "font-weight": "700 !important",
-    },
-    ".ag-cell": {"font-family": "'DNB-FontFamily', sans-serif !important", "font-weight": "400 !important"},
-}
-
-# TODO: Update with updated settings.
-CALENDAR_CSS = """
-.fc-event-past {
-    opacity: 0.8;
-}
-.fc-event-time {
-    font-style: italic;
-}
-.fc-event-title {
-    font-weight: 500;
-}
-.fc-toolbar-title {
-    font-size: 2rem;
-}
-"""
