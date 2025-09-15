@@ -35,8 +35,8 @@ CTF_TASKS = [
     {
         "id": 4,
         "title": "Finn Sykkelen",
-        "text": "Sykkelen min har blitt stjålet! Kan du hjelpe meg å finne den? Jeg mistet den da jeg var på ferie i USA i februar. Det var en rød FC-770.",
-        "hint": None,
+        "text": "Sykkelen min har blitt stjålet! Kan du hjelpe meg å finne den? Jeg mistet den da jeg var på ferie i USA. Det var en rød FC-770.",
+        "hint": "En venn informerte meg om en nettside for å rapportere og finne stjålne sykler, men jeg husker ikke hva den het.",
         "answer_text": "<navn-på-byen-med-sykkelen> ",
         "answer": ["portland"],
     },
@@ -60,15 +60,15 @@ CTF_TASKS = [
         "id": 7,
         "title": "Pluss Én",
         "text": "Ryktene sier at tidligere finansdirektør Ida har kikket etter ny jobb en stund, men ingen vet når hun begynte å se seg om etter nye muligheter. En intern varsler har sendt deg en forkortet lenke som visstnok leder til LinkedIn-profilen hennes: https://bit.ly/4oHdfFy Når ble lenken laget?",
-        "hint": None,
+        "hint": "Innholdet i linken er irrelevant. Prøv å finn ut hvordan den er laget.",
         "answer_text": "<dag-i-datoen>",
         "answer": ["15", "femten", "femtende"],
     },
 ]
 
 CTF_ABOUT = """
-Capture the Flag (CTF) er navnet på en generell type oppgave innen infromatikk der målet er å finne en kode, passord
-eller liknende, som kalles "flagg". De fleste oppgavene i er innenfor kategorien "Open source intelligence" (OSINT),
+Capture the Flag (CTF) er navnet på en generell type oppgaver innen infromatikk der målet er å finne en kode, passord
+eller liknende, som kalles "flagg". De fleste oppgavene under er innenfor kategorien "Open source intelligence" (OSINT),
 som betyr at flaggene ligger blant offentlig tilgjengelig informasjon. Prøv å søke på internet med forskjellige
-kombinasjoner av ord i tittelen og oppgaveteksten, og prøve å søke videre med spor dere finner underveis.
+kombinasjoner av ord i tittelen og oppgaveteksten, og prøve å søke videre med spor som dukker opp underveis.
 """
