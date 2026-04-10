@@ -22,7 +22,7 @@ def render_welcome_page():
     """
     Render the welcome page.
     """
-    st.header("Welcome to Greenhouse at dagen@ifi 2025!")
+    st.header("Welcome to Greenhouse at ettermiddagen@ifi 2026!")
 
     col1, col2 = st.columns([1, 1])
 
